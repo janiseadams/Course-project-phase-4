@@ -84,6 +84,7 @@ def CalcTaxAndNetPay(hours, hourlyrate, taxrate):
     netpay = grosspay - incometax
     return grosspay, incometax, netpay
 
+
 def printinfo(DetailsPrinted):
     TotEmployees = 0
     TotHours = 0.00
