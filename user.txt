@@ -33,3 +33,5 @@ username|pwd|Admin
 username1|pwd1|User
 username|pwd|Admin
 username1|pwd1|User
+username|pwd|admin
+username1|pwd|user

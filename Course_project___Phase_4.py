@@ -1,33 +1,46 @@
+#
+#
+#
 from datetime import datetime
-
+################################################################################
 def CreateUsers():
     print('##### Create users, passwords, and roles #####')
-    UserFile = open('user.txt', 'a')
+    ########## Open the file user.txt in append mode and assign to UserFile
+    UserFile = open('Users.txt', 'a')
     while True:
+        ########## Write the line of code that will call function GetUserName and assign the return value to username
         username = GetUserName()
         if (username.upper() == "END"):
             break
+        ########## Write the line of code that will call function GetUserPassword and assign the return value to userpwd
         userpwd = GetUserPassword()
+        ########## Write the line of code that will call function GetUserRole() and assign the return value to userrole
         userrole = GetUserRole()
         UserDetail = username + "|" + userpwd + "|" + userrole + "\n"  
         UserFile.write(UserDetail)
+    # close file to save data
+    ########## Write the line of code that will close the file UserFile
     UserFile.close()
+       
+    
 
 def GetUserName():
-    return input("Enter username or 'End' to quit: ")
+    ##### write the code to enter the username or End and return username 
+    return input("Enter user name or 'End' to quit: ")
+   
 
 def GetUserPassword():
+    ##### write the code to enter the pwd and return pwd
     return input('Enter password: ')
-    
 
 def GetUserRole():
      userrole = input("Enter role (Admin or User): ")
      while True:
-        if userrole.lower() in ('Admin', 'User'):
+         ####### write the if statement that validates that Admin or User has been entered. If true, return userrole.  If false, re-input userrole
+         if userrole.lower() in ('admin', 'user'): # WARNING: may need to change this
             return userrole
-        else:
-            print('Incorrect. Please try again.')
-            userrole = input("Enter role (Admin or User): ")
+         userrole = input("Enter role (Admin or User): ")
+
 
 def printuserinfo():
     UserFile = open("Users.txt","r")
@@ -35,28 +48,35 @@ def printuserinfo():
         UserDetail = UserFile.readline()
         if not UserDetail:
             break
-        UserDetail = UserDetail.replace("\n", "")
+        UserDetail = UserDetail.replace("\n", "") #remove carriage return from end of line
         UserList = UserDetail.split("|")
         username = UserList[0]
         userpassword = UserList[1]
         userrole = UserList[2]
         print("User Name: ", username, " Password: ", userpassword, " Role: ", userrole)
 
+############################################################################################
+
 def Login():
-# read login information and store in a list
+        # read login information and store in a list
+    ########## Write the line of code that will open the file Users.txt in read mode
     UserFile = open('Users.txt', 'r')
     UserName = input("Enter User Name: ")
     UserRole = "None"
     while True:
-        UserDetail = UserFile.readline()      
-        if not UserDetail:
+       ########## Write the line of code that will read a line from UserFile and assign it to UserDetail
+       UserDetail = UserFile.readline()
+       if not UserDetail:
+           return UserRole, UserName
+       ########## Write the line of code that will replace the carriage return in UserDetail
+       UserDetail = UserDetail.replace("\n", "") #remove carriage return from end of line
+       ########## Write the line of code that will split UserDetail on the pipe delimiter (|) and assign it to UserList
+       UserList = UserDetail.split("|")
+       if UserName == UserList[0]:
+            UserRole = UserList[2]  # user is valid, return role
             return UserRole, UserName
-        UserDetail = UserDetail.replace('\n', '')
-        UserList = UserDetail.split("|")
-        if UserName == UserList[0]:
-            UserRole = UserList[2] 
-            return UserRole, UserName
-
+    return UserRole, UserName
+#########################################################################################
 def GetEmpName():
     empname = input("Enter employee name: ")
     return empname
@@ -68,10 +88,10 @@ def GetHoursWorked():
     hours = float(input('Enter amount of hours worked:  '))
     return hours
 def GetHourlyRate():
-    hourlyrate = float(input ("Enter hourly rate: "))
+    hourlyrate = float(input ('Enter hourly rate: '))
     return hourlyrate
 def GetTaxRate():
-    taxrate = float(input ("Enter tax rate: "))
+    taxrate = float(input ('Enter tax rate: '))
     return taxrate
 def CalcTaxAndNetPay(hours, hourlyrate, taxrate):
     grosspay = hours * hourlyrate
@@ -79,14 +99,13 @@ def CalcTaxAndNetPay(hours, hourlyrate, taxrate):
     netpay = grosspay - incometax
     return grosspay, incometax, netpay
 
-
 def printinfo(DetailsPrinted):
     TotEmployees = 0
     TotHours = 0.00
     TotGrossPay = 0.00
     TotTax = 0.00
     TotNetPay = 0.00
-    EmpFile = open("Employees.txt","a+")
+    EmpFile = open("Employees.txt","r")
     while True:
         rundate = input ("Enter start date for report (MM/DD/YYYY) or All for all data in file: ")
         if (rundate.upper() == "ALL"):
@@ -98,8 +117,8 @@ def printinfo(DetailsPrinted):
             print("Invalid date format. Try again.")
             print()
             continue  # skip next if statement and re-start loop
-        while True:
-            EmpDetail = EmpFile.readline()
+    while True:
+        EmpDetail = EmpFile.readline()
         if not EmpDetail:
             break
         EmpDetail = EmpDetail.replace("\n", "") #remove carriage return from end of line
@@ -126,32 +145,40 @@ def printinfo(DetailsPrinted):
         EmpTotals["TotGrossPay"] = TotGrossPay
         EmpTotals["TotTax"] = TotTax
         EmpTotals["TotNetPay"] = TotNetPay
-        DetailsPrinted = True
-    if (DetailsPrinted):
-        PrintTotals(EmpTotals)
+        DetailsPrinted = True   
+    if (DetailsPrinted):  #skip of no detail lines printed
+        PrintTotals (EmpTotals)
     else:
         print("No detail information to print")
-
 def PrintTotals(EmpTotals):    
     print()
     print(f'Total Number Of Employees: {EmpTotals["TotEmp"]}')
     print(f'Total Hours Worked: {EmpTotals["TotHrs"]:,.2f}')
     print(f'Total Gross Pay: {EmpTotals["TotGrossPay"]:,.2f}')
     print(f'Total Income Tax:  {EmpTotals["TotTax"]:,.2f}')
-    print(f'Total Net Pay: {EmpTotals["TotNetPay"]:,.2f}')  
+    print(f'Total Net Pay: {EmpTotals["TotNetPay"]:,.2f}')
+
+
+   
 
 if __name__ == "__main__":
+    ##################################################
+    ########## Write the line of code to call the method CreateUsers
     CreateUsers()
     print()
     print("##### Data Entry #####")
+    ########## Write the line of code to assign UserRole and UserName to the function Login
     UserRole, UserName = Login()
     DetailsPrinted = False  ###
     EmpTotals = {} ###
+    ########## Write the if statement that will check to see if UserRole is equal to NONE (NOTE: code will show red error lines until this line is written)
     if UserRole is None:
         print(UserName," is invalid.")
     else:
-        if UserRole.lower() == 'admin':              
-            EmpFile = open("Employees.txt", "a+")
+    # only admin users can enter data
+        ##### write the if statement that will check to see if the UserRole is equal to ADMIN (NOTE: code will show red error lines until this line is written)
+        if UserRole.lower() == 'admin': # WARNING: may need to change this
+            EmpFile = open("Employees.txt", "a+")                
             while True:
                 empname = GetEmpName()
                 if (empname.upper() == "END"):
@@ -162,5 +189,6 @@ if __name__ == "__main__":
                 taxrate = GetTaxRate()
                 EmpDetail = fromdate + "|" + todate  + "|" + empname  + "|" + str(hours)  + "|" + str(hourlyrate)  + "|" + str(taxrate) + "\n"  
                 EmpFile.write(EmpDetail)
+        # close file to save data
             EmpFile.close()    
         printinfo(DetailsPrinted)
